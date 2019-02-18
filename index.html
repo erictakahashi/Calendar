@@ -7,7 +7,7 @@
 	</head>
 
 	<body>
-		<div class="calendar">
+		<section class="calendar">
 			<div class="calendar-header">
 				<p id="month"></p>
 				<p id="year"></p>
@@ -28,7 +28,28 @@
 
 				<tbody id="calendarTableBody"></tbody>
 			</table>
-		</div>
+		</section>
+
+		<section class="form-section">
+			<form id="appointmentForm" class="form">
+				<h3 id="formTitle" class="form-title">Appointment</h3>
+
+				<div class="form-fieldset">
+					<label>Title:</label>
+					<input id="titleField" type="text" name="title">
+				</div>
+
+				<div class="form-fieldset">
+					<label>Description:</label>
+					<textarea id="descriptionField" name="description" rows="10" cols="30"></textarea>
+				</div>
+
+				<div class="buttons">
+					<button id="deleteBtn" type="button" onclick="deleteAppointment()">Delete</button>
+					<button type="button" onclick="saveAppointment()">Save</button>
+				</div>
+			</form>
+		</section>
 
 		<script src="js/calendar.js"></script>
 	</body>

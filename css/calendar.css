@@ -1,9 +1,31 @@
 body {
 	font-family: Verdana, sans-serif;
+	display: flex;
+	flex-direction: row;
+}
+
+button {
+	background-color: #008CBA;
+	border: none;
+	color: white;
+	cursor: pointer;
+	padding: 10px 20px;
+	text-align: center;
+	text-decoration: none;
+	display: inline-block;
+	font-size: 12px;
+}
+button:not([disabled]):hover {
+	opacity: 0.7;
+}
+button[disabled] {
+	background-color: #e7e7e7;
+	color: black;
+	cursor: initial;
 }
 
 .calendar {
-	display: inline-block;
+	flex: 2;
 }
 
 .calendar-header {
@@ -56,4 +78,36 @@ td:not(.not-selectable):hover {
 
 .not-selectable {
 	background-color: #777777a6;
+}
+
+.form-section {
+	flex: 1;
+	padding: 10px;
+}
+
+.form {
+	border: 1px solid #ddd;
+	color: #777;
+	display: none;
+	padding: 10px;
+}
+
+.form-title {
+	color: #666;
+	margin-top: 0;
+}
+
+.form-fieldset {
+	display: flex;
+	flex-direction: column;
+	margin-bottom: 10px;
+}
+
+.form-fieldset label {
+	margin-bottom: 5px;
+}
+
+.form input,
+.form textarea {
+	flex: 1;
 }

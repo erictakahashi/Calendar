@@ -12,6 +12,10 @@ let firstWeekDayOfCurrentMonth = firstDayOfCurrentMonth.getDay(); // Number Form
 let lastDayOfCurrentMonth = new Date(currentDay.getFullYear(), currentDay.getMonth() + 1, 0); // Format: "Thu Feb 28 2019 00:00:00 GMT-0300"
 let lastWeekDayOfCurrentMonth = lastDayOfCurrentMonth.getDay(); // Number Format: 4 (weekday from 0 to 6)
 
+// Hold the current appointment
+let currentAppointment = {};
+
+
 // Set the current month and year in the calendar header
 function setCurrentMonthAndYear () {
 	document.getElementById("month").innerText = currentMonthString;
@@ -77,6 +81,9 @@ function generateCalendar () {
 			let day = new Date(currentYear, currentMonth, calendar[i].day);
 			if (day < currentDay) {
 				tableCell.classList.add("not-selectable");
+			} else {
+				tableCell.setAttribute("data-day", calendar[i].day);
+				tableCell.addEventListener('click', addOrEditAppointment);
 			}
 		} else {
 			tableCell.classList.add("not-selectable");
@@ -88,3 +95,50 @@ function generateCalendar () {
 	}
 }
 generateCalendar();
+
+// Add or Edit and Appointment
+function addOrEditAppointment (event) {
+	event.preventDefault();
+
+	let tableCell = event.target;
+	let selectedDay = +tableCell.getAttribute("data-day");
+
+	let existingAppointment = JSON.parse(localStorage.getItem(selectedDay));
+	if (existingAppointment) {
+		editAppointment(existingAppointment);
+	} else {
+		addAppointment(selectedDay);
+	}
+}
+
+function addAppointment (selectedDay) {
+	setAppointmentForm(selectedDay, "", "", true);
+	document.getElementById("deleteBtn").setAttribute("disabled", true);
+}
+
+function editAppointment (appointment) {
+	setAppointmentForm(appointment.day, appointment.title, appointment.description, false);
+	document.getElementById("deleteBtn").removeAttribute("disabled");
+}
+
+function setAppointmentForm (day, title, description, newAppointment) {
+	document.getElementById("appointmentForm").style.display = "block";
+	document.getElementById("appointmentForm").setAttribute("data-day", day);
+	document.getElementById("formTitle").innerText = "Day " + day;
+	document.getElementById("titleField").value = title;
+	document.getElementById("descriptionField").value = description;
+}
+
+function saveAppointment () {
+	currentAppointment.day = document.getElementById("appointmentForm").getAttribute("data-day");
+	currentAppointment.title = document.getElementById("titleField").value;
+	currentAppointment.description = document.getElementById("descriptionField").value;
+
+	localStorage.setItem(currentAppointment.day, JSON.stringify(currentAppointment));
+
+	document.getElementById("appointmentForm").style.display = "none";
+}
+
+function deleteAppointment () {
+
+}
