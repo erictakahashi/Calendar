@@ -1,57 +1,50 @@
-// Function to get the number of days in the current month.
-function daysInMonth (month, year) {
-	return new Date(year, month, 0).getDate();
-}
+// Date Utilities
+const currentDay 			= new Date(); // Format: "Mon Feb 18 2019 15:44:31 GMT-0300"
+const currentMonth 			= currentDay.getMonth() + 1; // Number Format: 2
+const currentMonthString 	= currentDay.toLocaleString("en-us", { month: "long" }); // String Format: "February"
+const currentYear 			= currentDay.getFullYear(); // Number Format: 2019
+const daysOfCurrentMonth 	= new Date(currentYear, currentMonth, 0).getDate(); // Number Format: 28
 
-let currentDay = new Date();
-// console.log(currentDay);
-let currentMonth = currentDay.getMonth() + 1;
-// console.log(currentMonth);
-let currentYear = currentDay.getFullYear();
-// console.log(currentYear);
+let firstDayOfCurrentMonth = new Date(currentDay.getFullYear(), currentDay.getMonth(), 1); // Format: "Fri Feb 01 2019 00:00:00 GMT-0200"
+let firstWeekDayOfCurrentMonth = firstDayOfCurrentMonth.getDay(); // Number Format: 5 (weekday from 0 to 6)
 
-let daysOfCurrentMonth = daysInMonth(currentMonth, currentYear);
-console.log(daysOfCurrentMonth);
-
-let firstDayOfMonth = new Date(currentDay.getFullYear(), currentDay.getMonth(), 1);
-let firstDayOfMonthWeek = firstDayOfMonth.getDay();
-console.log(firstDayOfMonthWeek);
-let lastDayOfMonth = new Date(currentDay.getFullYear(), currentDay.getMonth() + 1, 0);
-let lastDayOfMonthWeek = lastDayOfMonth.getDay();
-// console.log(lastDayOfMonth);
+let lastDayOfCurrentMonth = new Date(currentDay.getFullYear(), currentDay.getMonth() + 1, 0); // Format: "Thu Feb 28 2019 00:00:00 GMT-0300"
+let lastWeekDayOfCurrentMonth = lastDayOfCurrentMonth.getDay(); // Number Format: 4 (weekday from 0 to 6)
 
 
+// Set the current month and year in the calendar header
 function setCurrentMonthAndYear () {
-	const month = currentDay.toLocaleString("en-us", { month: "long" });
-	document.getElementById("month").innerText = month;
+	document.getElementById("month").innerText = currentMonthString;
 	document.getElementById("year").innerText = currentYear;
 }
 setCurrentMonthAndYear();
 
 
-function generateCalendarObj () {
+// Generates and returns the calendar array with empty slots and the days
+// Empty slots are required to append the days in the right week day column in the calendar table.
+function generateCalendarArray () {
 	let calendar = [];
 	const firstSlot = 0;
 	let tempSlot = firstSlot;
 
-	while (tempSlot < firstDayOfMonthWeek) {
+	// While tempSlot is less than firstWeekDayOfCurrentMonth, push empty slots to the calendar array
+	while (tempSlot < firstWeekDayOfCurrentMonth) {
 		let slot = {
 			slot: tempSlot
 		};
 		calendar.push(slot);
 		tempSlot++;
 	}
-
+	// Append the days of the month in the calendar array
 	for (let i = 1; i <= daysOfCurrentMonth; i++) {
 		let slot = {
 			slot: tempSlot,
 			day: i
 		};
-
 		calendar.push(slot);
 		tempSlot++;
 	}
-
+	// Append the remaining empty slots to complete a week
 	while (calendar.length % 7 != 0) {
 		let slot = {
 			slot: tempSlot
@@ -60,21 +53,22 @@ function generateCalendarObj () {
 		tempSlot++;
 	}
 
-	console.log(calendar);
 	return calendar;
 }
 
+// Generates the calendar in the front end by appending the days cells in the calendar
 function generateCalendar () {
-	let calendar = generateCalendarObj();
+	let calendar = generateCalendarArray();
 
-	let dayOfWeek = 0;
+	let weekDay = 0;
 	let tableRow;
 	for (let i = 0; i < calendar.length; i++) {
-		if (dayOfWeek == 0) {
+		// Create the "table row" element
+		if (weekDay == 0) {
 			tableRow = document.createElement("TR");
 			document.getElementById("calendarTableBody").appendChild(tableRow);
 		}
-
+		// Append the "table cell" 
 		let tableCell = document.createElement("TD");
 		if (calendar[i].day) {
 			let textnode = document.createTextNode(calendar[i].day);
@@ -84,16 +78,8 @@ function generateCalendar () {
 		}
 		tableRow.appendChild(tableCell);
 
-		dayOfWeek = (dayOfWeek == 6) ? 0 : dayOfWeek + 1;
-
-
-		// let calendarSlot = document.createElement("LI");
-		// if (calendar[i].day) {
-		// 	let textnode = document.createTextNode(calendar[i].day);
-		// 	calendarSlot.appendChild(textnode);
-		// }
-		// document.getElementById("days").appendChild(calendarSlot);
+		// Determine the current week day
+		weekDay = (weekDay == 6) ? 0 : weekDay + 1;
 	}
 }
-
 generateCalendar();
