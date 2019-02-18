@@ -1,16 +1,16 @@
 // Date Utilities
 const currentDay 			= new Date(); // Format: "Mon Feb 18 2019 15:44:31 GMT-0300"
-const currentMonth 			= currentDay.getMonth() + 1; // Number Format: 2
+	currentDay.setHours(0, 0, 0, 0); // Set hours of current day to zero
+const currentMonth 			= currentDay.getMonth(); // Number Format: 2
 const currentMonthString 	= currentDay.toLocaleString("en-us", { month: "long" }); // String Format: "February"
 const currentYear 			= currentDay.getFullYear(); // Number Format: 2019
-const daysOfCurrentMonth 	= new Date(currentYear, currentMonth, 0).getDate(); // Number Format: 28
+const daysOfCurrentMonth 	= new Date(currentYear, (currentMonth + 1), 0).getDate(); // Number Format: 28
 
 let firstDayOfCurrentMonth = new Date(currentDay.getFullYear(), currentDay.getMonth(), 1); // Format: "Fri Feb 01 2019 00:00:00 GMT-0200"
 let firstWeekDayOfCurrentMonth = firstDayOfCurrentMonth.getDay(); // Number Format: 5 (weekday from 0 to 6)
 
 let lastDayOfCurrentMonth = new Date(currentDay.getFullYear(), currentDay.getMonth() + 1, 0); // Format: "Thu Feb 28 2019 00:00:00 GMT-0300"
 let lastWeekDayOfCurrentMonth = lastDayOfCurrentMonth.getDay(); // Number Format: 4 (weekday from 0 to 6)
-
 
 // Set the current month and year in the calendar header
 function setCurrentMonthAndYear () {
@@ -68,13 +68,18 @@ function generateCalendar () {
 			tableRow = document.createElement("TR");
 			document.getElementById("calendarTableBody").appendChild(tableRow);
 		}
-		// Append the "table cell" 
+		// Append the "table cell"
 		let tableCell = document.createElement("TD");
 		if (calendar[i].day) {
 			let textnode = document.createTextNode(calendar[i].day);
 			tableCell.appendChild(textnode);
+
+			let day = new Date(currentYear, currentMonth, calendar[i].day);
+			if (day < currentDay) {
+				tableCell.classList.add("not-selectable");
+			}
 		} else {
-			tableCell.classList.add("empty-slot");
+			tableCell.classList.add("not-selectable");
 		}
 		tableRow.appendChild(tableCell);
 

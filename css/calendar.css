@@ -45,11 +45,15 @@ th, td {
 }
 
 td {
-	cursor: pointer;
 	height: 50px;
 }
 
-td:hover {
+td:not(.not-selectable):hover {
 	background: #1abc9c;
-	color: white !important
+	color: white;
+	cursor: pointer;
+}
+
+.not-selectable {
+	background-color: #777777a6;
 }
