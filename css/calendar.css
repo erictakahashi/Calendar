@@ -46,6 +46,7 @@ button[disabled] {
 table {
 	border-collapse: collapse;
 	text-align: center;
+	width: 100%;
 }
 
 thead {
@@ -68,6 +69,8 @@ th, td {
 
 td {
 	height: 50px;
+	padding: 5px;
+	vertical-align: top;
 }
 
 td:not(.not-selectable):hover {
@@ -78,6 +81,16 @@ td:not(.not-selectable):hover {
 
 .not-selectable {
 	background-color: #777777a6;
+}
+
+.day-label {
+	margin-bottom: 5px;
+}
+
+.appointment {
+	background-color: rgb(192, 230, 255);
+	border-radius: 2px;
+	padding: 3px 2px;
 }
 
 .form-section {
@@ -110,4 +123,5 @@ td:not(.not-selectable):hover {
 .form input,
 .form textarea {
 	flex: 1;
+	padding: 5px;
 }

@@ -75,11 +75,22 @@ function generateCalendar () {
 		// Append the "table cell"
 		let tableCell = document.createElement("TD");
 		if (calendar[i].day) {
-			let textnode = document.createTextNode(calendar[i].day);
-			tableCell.appendChild(textnode);
+			let dayNode = document.createElement("DIV");
+			dayNode.innerText = calendar[i].day;
+			dayNode.classList.add("day-label");
+			tableCell.appendChild(dayNode);
 
-			let day = new Date(currentYear, currentMonth, calendar[i].day);
-			if (day < currentDay) {
+			// Check if there's an existing appointment and append it in the calendar
+			let existingAppointment = dayExistingAppointment(calendar[i].day);
+			if (existingAppointment) {
+				let appointmentNode = document.createElement("DIV");
+				appointmentNode.innerText = existingAppointment.title;
+				appointmentNode.classList.add("appointment");
+				tableCell.appendChild(appointmentNode);
+			}
+
+			let dayDate = new Date(currentYear, currentMonth, calendar[i].day);
+			if (dayDate < currentDay) {
 				tableCell.classList.add("not-selectable");
 			} else {
 				tableCell.setAttribute("data-day", calendar[i].day);
@@ -96,11 +107,16 @@ function generateCalendar () {
 }
 generateCalendar();
 
+// Return existing appointment stored locally
+function dayExistingAppointment (day) {
+	return existingAppointment = JSON.parse(localStorage.getItem(day));
+}
+
 // Add or Edit and Appointment
 function addOrEditAppointment (event) {
 	event.preventDefault();
 
-	let tableCell = event.target;
+	let tableCell = event.currentTarget;
 	let selectedDay = +tableCell.getAttribute("data-day");
 
 	let existingAppointment = JSON.parse(localStorage.getItem(selectedDay));
@@ -121,7 +137,7 @@ function editAppointment (appointment) {
 	document.getElementById("deleteBtn").removeAttribute("disabled");
 }
 
-function setAppointmentForm (day, title, description, newAppointment) {
+function setAppointmentForm (day, title, description) {
 	document.getElementById("appointmentForm").style.display = "block";
 	document.getElementById("appointmentForm").setAttribute("data-day", day);
 	document.getElementById("formTitle").innerText = "Day " + day;
@@ -136,9 +152,28 @@ function saveAppointment () {
 
 	localStorage.setItem(currentAppointment.day, JSON.stringify(currentAppointment));
 
+	// Check if the appointment already exists in the calendar
+	let appointmentNode = document.querySelector("td[data-day='" + currentAppointment.day + "'] .appointment");
+	if (appointmentNode) {
+		appointmentNode.innerText = currentAppointment.title;
+	} else {
+		let newAppointmentNode = document.createElement("DIV");
+		newAppointmentNode.innerText = currentAppointment.title;
+		newAppointmentNode.classList.add("appointment");
+		document.querySelector("td[data-day='" + currentAppointment.day + "']").appendChild(newAppointmentNode);
+	}
+
 	document.getElementById("appointmentForm").style.display = "none";
 }
 
 function deleteAppointment () {
+	let day = document.getElementById("appointmentForm").getAttribute("data-day");
+	localStorage.removeItem(day);
 
+	// Remove appointment node from the calendar
+	let appointmentNode = document.querySelector("td[data-day='" + currentAppointment.day + "'] .appointment");
+	let tableCell = document.querySelector("td[data-day='" + currentAppointment.day + "']");
+	if (appointmentNode && tableCell) tableCell.removeChild(appointmentNode);
+
+	document.getElementById("appointmentForm").style.display = "none";
 }
